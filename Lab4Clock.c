@@ -1,31 +1,4 @@
-#ifndef LAB4CLOCK_C
-#define LAB4CLOCK_C
-
-/**
-Deleted openGPIO and readGPIO because they were redundant
-**/
-#include <stdio.h>
-#include <fcntl.h>
-#include <linux/i2c-dev.h>
-#include <linux/i2c.h>
-#include <stdlib.h>
-#include <string.h>
-#include <time.h>
-#include <stdint.h>
-
-#include "Lab4Photo.c"
-
-#define GP_I2C   (29)
-#define GPIO_DIRECTION_OUT  (0)
-#define ERROR               (-1)
-
-const int CLOCKI2CADD = 0x68;
-
-//function prototypes
-int openClockInterface();
-int setClock(int deviceHandle);
-int* getClock(int deviceHandle, int *rval);
-int initiateGPIO (int gpio);
+#include "Lab4Clock.h"
 
 int openClockInterface(){
 	//Set I2C lines
@@ -51,8 +24,6 @@ int openClockInterface(){
 		printf("Error in ioctl\n");
 		exit(-1);
 	}
-	
-	
 	
 	return deviceHandle;
 }
@@ -256,6 +227,3 @@ int initiateGPIO (int gpio)
 
 	return (0);
 }
-
-
-#endif

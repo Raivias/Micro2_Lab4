@@ -4,7 +4,7 @@
 /* Authors: Group Steve													*/
 /************************************************************************/
 
-#include "Lab4Clock.c"
+#include "Lab4Clock.h"
 
 const int WAITTIME = 00;
 
