@@ -25,7 +25,7 @@ RA2/AN2  = Pin 10 <- photoresistor
 */
 
 //turn off the watchdog timer
-#pragma config WDTE = ON
+#pragma config WDTE = OFF // 0b11
 
 #include <pic16f688.h>
 #include <stdlib.h>
@@ -234,17 +234,15 @@ void main (void)
     //RC5 = 1;
     //wait_while_strobe_low();
     //RC5 = 0;
-	
-    while(1){
-        debug_write(0x7);
-    }
     
     char cmd;
     int data;
     RC5 = 0;
-    while(1){
     
-        //asm("CLRWDT"); 
+    debug_write(0xA);
+   
+    while(1){
+        //asm("RSTWDT");
         RC5 = 1;
         cmd = read_msg();
         RC5 = 0;

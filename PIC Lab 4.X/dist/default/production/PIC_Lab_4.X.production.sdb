@@ -70,15 +70,15 @@
 "230 C:\Users\Raivias\Documents\College\Senior\16.480 Microprocessor System II & Embedded Systems\Micro2_Lab4\PIC Lab 4.X\assignment4.c
 [v _main main `(v  1 e 0 0 ]
 {
-"264
+"262
 [v main@chunk3 chunk3 `uc  1 a 1 3 ]
 [v main@chunk2 chunk2 `uc  1 a 1 2 ]
 [v main@chunk1 chunk1 `uc  1 a 1 1 ]
-"243
+"239
 [v main@data data `i  1 a 2 4 ]
-"242
+"238
 [v main@cmd cmd `uc  1 a 1 0 ]
-"279
+"277
 } 0
 "134
 [v _write_msg write_msg `(v  1 e 0 0 ]

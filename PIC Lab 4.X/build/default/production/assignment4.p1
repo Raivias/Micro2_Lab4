@@ -41,7 +41,7 @@ Version 3.2 HI-TECH Software Intermediate Code
 [v _ADRESL `Vuc ~T0 @X0 0 e@158 ]
 [p mainexit ]
 "28 assignment4.c
-[p x WDTE=ON ]
+[p x WDTE=OFF ]
 [; ;pic16f688.h: 49: extern volatile unsigned char INDF @ 0x000;
 "51 C:\Program Files (x86)\Microchip\xc8\v1.35\include\pic16f688.h
 [; ;pic16f688.h: 51: asm("INDF equ 00h");
@@ -1416,131 +1416,120 @@ Version 3.2 HI-TECH Software Intermediate Code
 [; ;assignment4.c: 233: set_read();
 "233
 [e ( _set_read ..  ]
-[; ;assignment4.c: 238: while(1){
 "238
+[v _cmd `uc ~T0 @X0 1 a ]
+"239
+[v _data `i ~T0 @X0 1 a ]
+[; ;assignment4.c: 238: char cmd;
+[; ;assignment4.c: 239: int data;
+[; ;assignment4.c: 240: RC5 = 0;
+"240
+[e = _RC5 -> -> 0 `i `b ]
+[; ;assignment4.c: 242: debug_write(0xA);
+"242
+[e ( _debug_write (1 -> -> 10 `i `uc ]
+[; ;assignment4.c: 244: while(1){
+"244
 [e :U 127 ]
 {
-[; ;assignment4.c: 239: debug_write(0x7);
-"239
-[e ( _debug_write (1 -> -> 7 `i `uc ]
-"240
-}
-[e :U 126 ]
-"238
-[e $U 127  ]
-[e :U 128 ]
-"242
-[v _cmd `uc ~T0 @X0 1 a ]
-"243
-[v _data `i ~T0 @X0 1 a ]
-[; ;assignment4.c: 240: }
-[; ;assignment4.c: 242: char cmd;
-[; ;assignment4.c: 243: int data;
-[; ;assignment4.c: 244: RC5 = 0;
-"244
-[e = _RC5 -> -> 0 `i `b ]
-[; ;assignment4.c: 245: while(1){
-"245
-[e :U 130 ]
-{
-[; ;assignment4.c: 248: RC5 = 1;
-"248
+[; ;assignment4.c: 246: RC5 = 1;
+"246
 [e = _RC5 -> -> 1 `i `b ]
-[; ;assignment4.c: 249: cmd = read_msg();
-"249
+[; ;assignment4.c: 247: cmd = read_msg();
+"247
 [e = _cmd ( _read_msg ..  ]
-[; ;assignment4.c: 250: RC5 = 0;
-"250
+[; ;assignment4.c: 248: RC5 = 0;
+"248
 [e = _RC5 -> -> 0 `i `b ]
-[; ;assignment4.c: 251: switch(cmd){
-"251
-[e $U 133  ]
+[; ;assignment4.c: 249: switch(cmd){
+"249
+[e $U 130  ]
 {
-[; ;assignment4.c: 252: case(0x00):
-"252
-[e :U 134 ]
-[; ;assignment4.c: 253: init();
-"253
+[; ;assignment4.c: 250: case(0x00):
+"250
+[e :U 131 ]
+[; ;assignment4.c: 251: init();
+"251
 [e ( _init ..  ]
-[; ;assignment4.c: 255: write_msg(0x0E);
+[; ;assignment4.c: 253: write_msg(0x0E);
+"253
+[e ( _write_msg (1 -> -> 14 `i `uc ]
+[; ;assignment4.c: 254: break;
+"254
+[e $U 129  ]
+[; ;assignment4.c: 255: case(0x01):
 "255
-[e ( _write_msg (1 -> -> 14 `i `uc ]
-[; ;assignment4.c: 256: break;
-"256
-[e $U 132  ]
-[; ;assignment4.c: 257: case(0x01):
+[e :U 132 ]
+[; ;assignment4.c: 257: write_msg(0x0E);
 "257
-[e :U 135 ]
-[; ;assignment4.c: 259: write_msg(0x0E);
-"259
 [e ( _write_msg (1 -> -> 14 `i `uc ]
-[; ;assignment4.c: 260: break;
-"260
-[e $U 132  ]
-[; ;assignment4.c: 261: case(0x02):
+[; ;assignment4.c: 258: break;
+"258
+[e $U 129  ]
+[; ;assignment4.c: 259: case(0x02):
+"259
+[e :U 133 ]
+[; ;assignment4.c: 261: data = vread();
 "261
-[e :U 136 ]
-[; ;assignment4.c: 263: data = vread();
-"263
 [e = _data ( _vread ..  ]
-"264
+"262
 [v _chunk1 `uc ~T0 @X0 1 a ]
 [v _chunk2 `uc ~T0 @X0 1 a ]
 [v _chunk3 `uc ~T0 @X0 1 a ]
-[; ;assignment4.c: 264: char chunk1, chunk2, chunk3;
-[; ;assignment4.c: 265: chunk1 = (char) (data & 0x000f);
-"265
+[; ;assignment4.c: 262: char chunk1, chunk2, chunk3;
+[; ;assignment4.c: 263: chunk1 = (char) (data & 0x000f);
+"263
 [e = _chunk1 -> & _data -> 15 `i `uc ]
-[; ;assignment4.c: 266: chunk2 = (char) ((data >> 4) & 0x000f);
-"266
+[; ;assignment4.c: 264: chunk2 = (char) ((data >> 4) & 0x000f);
+"264
 [e = _chunk2 -> & >> _data -> 4 `i -> 15 `i `uc ]
-[; ;assignment4.c: 267: chunk3 = (char) ((data >> 8) & 0x000f);
-"267
+[; ;assignment4.c: 265: chunk3 = (char) ((data >> 8) & 0x000f);
+"265
 [e = _chunk3 -> & >> _data -> 8 `i -> 15 `i `uc ]
-[; ;assignment4.c: 268: write_msg(chunk3);
-"268
+[; ;assignment4.c: 266: write_msg(chunk3);
+"266
 [e ( _write_msg (1 _chunk3 ]
-[; ;assignment4.c: 269: write_msg(chunk2);
-"269
+[; ;assignment4.c: 267: write_msg(chunk2);
+"267
 [e ( _write_msg (1 _chunk2 ]
-[; ;assignment4.c: 270: write_msg(chunk1);
-"270
+[; ;assignment4.c: 268: write_msg(chunk1);
+"268
 [e ( _write_msg (1 _chunk1 ]
-[; ;assignment4.c: 272: write_msg(0x0E);
-"272
+[; ;assignment4.c: 270: write_msg(0x0E);
+"270
 [e ( _write_msg (1 -> -> 14 `i `uc ]
-[; ;assignment4.c: 273: break;
+[; ;assignment4.c: 271: break;
+"271
+[e $U 129  ]
+[; ;assignment4.c: 272: default:
+"272
+[e :U 134 ]
+[; ;assignment4.c: 273: write_msg(0x0F);
 "273
-[e $U 132  ]
-[; ;assignment4.c: 274: default:
-"274
-[e :U 137 ]
-[; ;assignment4.c: 275: write_msg(0x0F);
-"275
 [e ( _write_msg (1 -> -> 15 `i `uc ]
-[; ;assignment4.c: 276: break;
-"276
-[e $U 132  ]
-"277
+[; ;assignment4.c: 274: break;
+"274
+[e $U 129  ]
+"275
 }
-[; ;assignment4.c: 277: }
-[e $U 132  ]
-"251
-[e :U 133 ]
-[e [\ _cmd , $ -> -> 0 `i `uc 134
- , $ -> -> 1 `i `uc 135
- , $ -> -> 2 `i `uc 136
- 137 ]
-"277
-[e :U 132 ]
-"278
-}
+[; ;assignment4.c: 275: }
+[e $U 129  ]
+"249
+[e :U 130 ]
+[e [\ _cmd , $ -> -> 0 `i `uc 131
+ , $ -> -> 1 `i `uc 132
+ , $ -> -> 2 `i `uc 133
+ 134 ]
+"275
 [e :U 129 ]
-"245
-[e $U 130  ]
-[e :U 131 ]
-[; ;assignment4.c: 278: }
-[; ;assignment4.c: 279: }
-"279
+"276
+}
+[e :U 126 ]
+"244
+[e $U 127  ]
+[e :U 128 ]
+[; ;assignment4.c: 276: }
+[; ;assignment4.c: 277: }
+"277
 [e :UE 125 ]
 }

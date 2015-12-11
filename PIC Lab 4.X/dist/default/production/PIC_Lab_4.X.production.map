@@ -5,7 +5,7 @@ Linker command line:
 --edf=C:\Program Files (x86)\Microchip\xc8\v1.35\dat\en_msgs.txt -cs \
   -h+dist/default/production\PIC_Lab_4.X.production.sym \
   --cmf=dist/default/production\PIC_Lab_4.X.production.cmf -z -Q16F688 \
-  -oC:\Users\Raivias\AppData\Local\Temp\s8ik.2 \
+  -oC:\Users\Raivias\AppData\Local\Temp\s7ds.2 \
   -Mdist/default/production/PIC_Lab_4.X.production.map -E1 -ver=XC8 \
   -ASTACK=0A0h-0efh -pstack=STACK -ACODE=00h-07FFhx2 -ASTRCODE=00h-0FFFh \
   -ASTRING=00h-0FFhx16 -ACONST=00h-0FFhx16 -AENTRY=00h-0FFhx16 \
@@ -17,7 +17,7 @@ Linker command line:
   -pfunctab=CODE -ACONFIG=02007h-02007h -pconfig=CONFIG -DCONFIG=2 \
   -AIDLOC=02000h-02003h -pidloc=IDLOC -DIDLOC=2 -AEEDATA=00h-0FFh/02100h \
   -peeprom_data=EEDATA -DEEDATA=2 -DCODE=2 -DSTRCODE=2 -DSTRING=2 -DCONST=2 \
-  -DENTRY=2 -k C:\Users\Raivias\AppData\Local\Temp\s8ik.obj \
+  -DENTRY=2 -k C:\Users\Raivias\AppData\Local\Temp\s7ds.obj \
   dist/default/production\PIC_Lab_4.X.production.obj 
 
 Object code version is 3.11
@@ -27,22 +27,22 @@ Machine type is 16F688
 
 
                 Name                               Link     Load   Length Selector   Space Scale
-C:\Users\Raivias\AppData\Local\Temp\s8ik.obj
+C:\Users\Raivias\AppData\Local\Temp\s7ds.obj
                 end_init                              0        0        2        0       0
                 config                             2007     2007        1     400E       0
 dist/default/production\PIC_Lab_4.X.production.obj
                 cinit                               7FD      7FD        3      FFA       0
-                text10                              6D8      6D8       13      DB0       0
-                text9                               747      747       54      E8E       0
-                text8                               6A8      6A8        8      D50       0
-                text7                               6B8      6B8       10      D70       0
-                text6                               6C8      6C8       10      D90       0
-                text5                               705      705       1E      E0A       0
-                text4                               6A2      6A2        6      D44       0
-                text3                               723      723       24      E46       0
-                text2                               6B0      6B0        8      D60       0
-                text1                               6EB      6EB       1A      DD6       0
-                maintext                            79B      79B       62      F36       0
+                text10                              6D5      6D5       13      DAA       0
+                text9                               744      744       54      E88       0
+                text8                               6A5      6A5        8      D4A       0
+                text7                               6B5      6B5       10      D6A       0
+                text6                               6C5      6C5       10      D8A       0
+                text5                               702      702       1E      E04       0
+                text4                               69F      69F        6      D3E       0
+                text3                               720      720       24      E40       0
+                text2                               6AD      6AD        8      D5A       0
+                text1                               6E8      6E8       1A      DD0       0
+                maintext                            798      798       65      F30       0
                 cstackBANK0                          20       20        6       20       1
                 cstackCOMMON                         70       70        A       70       1
 
@@ -52,17 +52,17 @@ TOTAL           Name                               Link     Load   Length     Sp
         CLASS   CODE           
                 end_init                              0        0        2         0
                 cinit                               7FD      7FD        3         0
-                text10                              6D8      6D8       13         0
-                text9                               747      747       54         0
-                text8                               6A8      6A8        8         0
-                text7                               6B8      6B8       10         0
-                text6                               6C8      6C8       10         0
-                text5                               705      705       1E         0
-                text4                               6A2      6A2        6         0
-                text3                               723      723       24         0
-                text2                               6B0      6B0        8         0
-                text1                               6EB      6EB       1A         0
-                maintext                            79B      79B       62         0
+                text10                              6D5      6D5       13         0
+                text9                               744      744       54         0
+                text8                               6A5      6A5        8         0
+                text7                               6B5      6B5       10         0
+                text6                               6C5      6C5       10         0
+                text5                               702      702       1E         0
+                text4                               69F      69F        6         0
+                text3                               720      720       24         0
+                text2                               6AD      6AD        8         0
+                text1                               6E8      6E8       1A         0
+                maintext                            798      798       65         0
 
         CLASS   STRCODE        
 
@@ -111,17 +111,17 @@ SEGMENTS        Name                           Load    Length   Top    Selector 
                 reset_vec                      000000  000002  000002         0       0  CODE        2
                 cstackBANK0                    000020  000006  000026        20       1  BANK0       1
                 cstackCOMMON                   000070  00000A  00007A        70       1  COMMON      1
-                text4                          0006A2  000006  0006A8       D44       0  CODE        2
-                text8                          0006A8  000008  0006B0       D50       0  CODE        2
-                text2                          0006B0  000008  0006B8       D60       0  CODE        2
-                text7                          0006B8  000010  0006C8       D70       0  CODE        2
-                text6                          0006C8  000010  0006D8       D90       0  CODE        2
-                text10                         0006D8  000013  0006EB       DB0       0  CODE        2
-                text1                          0006EB  00001A  000705       DD6       0  CODE        2
-                text5                          000705  00001E  000723       E0A       0  CODE        2
-                text3                          000723  000024  000747       E46       0  CODE        2
-                text9                          000747  000054  00079B       E8E       0  CODE        2
-                maintext                       00079B  000062  0007FD       F36       0  CODE        2
+                text4                          00069F  000006  0006A5       D3E       0  CODE        2
+                text8                          0006A5  000008  0006AD       D4A       0  CODE        2
+                text2                          0006AD  000008  0006B5       D5A       0  CODE        2
+                text7                          0006B5  000010  0006C5       D6A       0  CODE        2
+                text6                          0006C5  000010  0006D5       D8A       0  CODE        2
+                text10                         0006D5  000013  0006E8       DAA       0  CODE        2
+                text1                          0006E8  00001A  000702       DD0       0  CODE        2
+                text5                          000702  00001E  000720       E04       0  CODE        2
+                text3                          000720  000024  000744       E40       0  CODE        2
+                text9                          000744  000054  000798       E88       0  CODE        2
+                maintext                       000798  000065  0007FD       F30       0  CODE        2
                 cinit                          0007FD  000003  000800       FFA       0  CODE        2
                 config                         002007  000001  002008      400E       0  CONFIG      2
 
@@ -132,13 +132,13 @@ UNUSED ADDRESS RANGES
         BANK0            0026-006F             4A           1
         BANK1            00A0-00EF             50           1
         BANK2            0120-016F             50           1
-        CODE             0002-06A1            6A0           2
+        CODE             0002-069E            69D           2
                          0800-0FFF            800
         COMMON           007A-007D              4           1
-        CONST            0002-06A1            100           2
+        CONST            0002-069E            100           2
                          0800-0FFF            100
         EEDATA           2100-21FF            100           2
-        ENTRY            0002-06A1            100           2
+        ENTRY            0002-069E            100           2
                          0800-0FFF            100
         IDLOC            2000-2003              4           2
         RAM              0026-006F             4A           1
@@ -149,9 +149,9 @@ UNUSED ADDRESS RANGES
         SFR2             0100-011F             20           1
         SFR3             0180-01EF             70           1
         STACK            00A0-00EF             50           1
-        STRCODE          0002-06A1            6A0           2
+        STRCODE          0002-069E            69D           2
                          0800-0FFF            800
-        STRING           0002-06A1            100           2
+        STRING           0002-069E            100           2
                          0800-0FFF            100
 
                                   Symbol Table
@@ -174,7 +174,7 @@ _TRISC2                          (abs)        043A
 _TRISC3                          (abs)        043B
 _TRISC4                          (abs)        043C
 _TRISC5                          (abs)        043D
-__CFG_WDTE$ON                    (abs)        0000
+__CFG_WDTE$OFF                   (abs)        0000
 __Habs1                          abs1         0000
 __Hbank0                         bank0        0000
 __Hbank1                         bank1        0000
@@ -249,31 +249,31 @@ ___int_sp                        stack        0000
 ___latbits                       (abs)        0001
 ___sp                            stack        0000
 __end_of__initialization         cinit        07FD
-__end_of_debug_write             text9        079B
-__end_of_init                    text10       06EB
+__end_of_debug_write             text9        0798
+__end_of_init                    text10       06E8
 __end_of_main                    maintext     07FD
-__end_of_read_adc                text4        06A8
-__end_of_read_msg                text5        0723
-__end_of_set_read                text8        06B0
-__end_of_set_write               text2        06B8
-__end_of_vread                   text3        0747
-__end_of_wait_while_strobe_high  text7        06C8
-__end_of_wait_while_strobe_low   text6        06D8
-__end_of_write_msg               text1        0705
+__end_of_read_adc                text4        06A5
+__end_of_read_msg                text5        0720
+__end_of_set_read                text8        06AD
+__end_of_set_write               text2        06B5
+__end_of_vread                   text3        0744
+__end_of_wait_while_strobe_high  text7        06C5
+__end_of_wait_while_strobe_low   text6        06D5
+__end_of_write_msg               text1        0702
 __initialization                 cinit        07FD
 __pcstackBANK0                   cstackBANK0  0020
 __pcstackCOMMON                  cstackCOMMON 0070
-__pmaintext                      maintext     079B
-__ptext1                         text1        06EB
-__ptext10                        text10       06D8
-__ptext2                         text2        06B0
-__ptext3                         text3        0723
-__ptext4                         text4        06A2
-__ptext5                         text5        0705
-__ptext6                         text6        06C8
-__ptext7                         text7        06B8
-__ptext8                         text8        06A8
-__ptext9                         text9        0747
+__pmaintext                      maintext     0798
+__ptext1                         text1        06E8
+__ptext10                        text10       06D5
+__ptext2                         text2        06AD
+__ptext3                         text3        0720
+__ptext4                         text4        069F
+__ptext5                         text5        0702
+__ptext6                         text6        06C5
+__ptext7                         text7        06B5
+__ptext8                         text8        06A5
+__ptext9                         text9        0744
 __size_of_debug_write            (abs)        0000
 __size_of_init                   (abs)        0000
 __size_of_main                   (abs)        0000
@@ -285,17 +285,17 @@ __size_of_vread                  (abs)        0000
 __size_of_wait_while_strobe_high (abs)        0000
 __size_of_wait_while_strobe_low  (abs)        0000
 __size_of_write_msg              (abs)        0000
-_debug_write                     text9        0747
-_init                            text10       06D8
-_main                            maintext     079B
-_read_adc                        text4        06A2
-_read_msg                        text5        0705
-_set_read                        text8        06A8
-_set_write                       text2        06B0
-_vread                           text3        0723
-_wait_while_strobe_high          text7        06B8
-_wait_while_strobe_low           text6        06C8
-_write_msg                       text1        06EB
+_debug_write                     text9        0744
+_init                            text10       06D5
+_main                            maintext     0798
+_read_adc                        text4        069F
+_read_msg                        text5        0702
+_set_read                        text8        06A5
+_set_write                       text2        06AD
+_vread                           text3        0720
+_wait_while_strobe_high          text7        06B5
+_wait_while_strobe_low           text6        06C5
+_write_msg                       text1        06E8
 btemp                            (abs)        007E
 debug_write@i                    cstackCOMMON 0072
 debug_write@msg                  cstackCOMMON 0071
@@ -690,19 +690,19 @@ MODULE INFORMATION
 
 Module		Function		Class		Link	Load	Size
 assignment4.c
-		_init          		CODE           	06D8	0000	20
-		_read_msg      		CODE           	0705	0000	31
-		_main          		CODE           	079B	0000	99
-		_write_msg     		CODE           	06EB	0000	27
-		_set_write     		CODE           	06B0	0000	9
-		_wait_while_strobe_low		CODE           	06C8	0000	17
-		_vread         		CODE           	0723	0000	37
-		_set_read      		CODE           	06A8	0000	9
-		_read_adc      		CODE           	06A2	0000	7
-		_debug_write   		CODE           	0747	0000	85
-		_wait_while_strobe_high		CODE           	06B8	0000	17
+		_init          		CODE           	06D5	0000	20
+		_read_msg      		CODE           	0702	0000	31
+		_main          		CODE           	0798	0000	102
+		_write_msg     		CODE           	06E8	0000	27
+		_set_write     		CODE           	06AD	0000	9
+		_wait_while_strobe_low		CODE           	06C5	0000	17
+		_vread         		CODE           	0720	0000	37
+		_set_read      		CODE           	06A5	0000	9
+		_read_adc      		CODE           	069F	0000	7
+		_debug_write   		CODE           	0744	0000	85
+		_wait_while_strobe_high		CODE           	06B5	0000	17
 
-assignment4.c estimated size: 358
+assignment4.c estimated size: 361
 
 shared
 		__initialization		CODE           	07FD	0000	1
