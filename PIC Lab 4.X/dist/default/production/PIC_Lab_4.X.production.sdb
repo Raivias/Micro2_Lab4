@@ -1,0 +1,146 @@
+[p LITE_MODE AUTOSTATIC PIC14 PICREGULAR PICMID ]
+[d version 1.1 ]
+[d edition pro ]
+[d chip 16F688 ]
+[d frameptr 6 ]
+"63 C:\Users\Raivias\Documents\College\Senior\16.480 Microprocessor System II & Embedded Systems\Micro2_Lab4\PIC Lab 4.X\assignment4.c
+[v _wait_while_strobe_high wait_while_strobe_high `(v  1 e 0 0 ]
+"77
+[v _wait_while_strobe_low wait_while_strobe_low `(v  1 e 0 0 ]
+"90
+[v _init init `(v  1 e 0 0 ]
+"107
+[v _set_read set_read `(v  1 e 0 0 ]
+"116
+[v _set_write set_write `(v  1 e 0 0 ]
+"134
+[v _write_msg write_msg `(v  1 e 0 0 ]
+"157
+[v _read_msg read_msg `(uc  1 e 1 0 ]
+"182
+[v _debug_write debug_write `(v  1 e 0 0 ]
+"209
+[v _read_adc read_adc `(v  1 e 0 0 ]
+"220
+[v _vread vread `(i  1 e 2 0 ]
+"230
+[v _main main `(v  1 e 0 0 ]
+"62 C:\Program Files (x86)\Microchip\xc8\v1.35\sources\common\float.c
+[v ___ftpack __ftpack `(f  1 e 3 0 ]
+"86 C:\Program Files (x86)\Microchip\xc8\v1.35\sources\common\ftadd.c
+[v ___ftadd __ftadd `(f  1 e 3 0 ]
+"6 C:\Program Files (x86)\Microchip\xc8\v1.35\sources\pic\eeprom.c
+[v _eecpymem eecpymem `(v  1 e 0 0 ]
+"24
+[v _memcpyee memcpyee `(v  1 e 0 0 ]
+"209 C:\Program Files (x86)\Microchip\xc8\v1.35\include\pic16f688.h
+[v _PORTC PORTC `VEuc  1 e 1 @7 ]
+"773
+[v _CMCON0 CMCON0 `VEuc  1 e 1 @25 ]
+"867
+[v _ADRESH ADRESH `VEuc  1 e 1 @30 ]
+"873
+[v _ADCON0 ADCON0 `VEuc  1 e 1 @31 ]
+"1359
+[v _ANSEL ANSEL `VEuc  1 e 1 @145 ]
+"1910
+[v _ADRESL ADRESL `VEuc  1 e 1 @158 ]
+"1916
+[v _ADCON1 ADCON1 `VEuc  1 e 1 @159 ]
+"2053
+[v _GO GO `VEb  1 e 0 @249 ]
+"2143
+[v _RC4 RC4 `VEb  1 e 0 @60 ]
+"2145
+[v _RC5 RC5 `VEb  1 e 0 @61 ]
+"2219
+[v _TRISA2 TRISA2 `VEb  1 e 0 @1066 ]
+"2227
+[v _TRISC0 TRISC0 `VEb  1 e 0 @1080 ]
+"2229
+[v _TRISC1 TRISC1 `VEb  1 e 0 @1081 ]
+"2231
+[v _TRISC2 TRISC2 `VEb  1 e 0 @1082 ]
+"2233
+[v _TRISC3 TRISC3 `VEb  1 e 0 @1083 ]
+"2235
+[v _TRISC4 TRISC4 `VEb  1 e 0 @1084 ]
+"2237
+[v _TRISC5 TRISC5 `VEb  1 e 0 @1085 ]
+"230 C:\Users\Raivias\Documents\College\Senior\16.480 Microprocessor System II & Embedded Systems\Micro2_Lab4\PIC Lab 4.X\assignment4.c
+[v _main main `(v  1 e 0 0 ]
+{
+"264
+[v main@chunk3 chunk3 `uc  1 a 1 3 ]
+[v main@chunk2 chunk2 `uc  1 a 1 2 ]
+[v main@chunk1 chunk1 `uc  1 a 1 1 ]
+"243
+[v main@data data `i  1 a 2 4 ]
+"242
+[v main@cmd cmd `uc  1 a 1 0 ]
+"279
+} 0
+"134
+[v _write_msg write_msg `(v  1 e 0 0 ]
+{
+[v write_msg@msg msg `uc  1 a 1 wreg ]
+[v write_msg@msg msg `uc  1 a 1 wreg ]
+"137
+[v write_msg@msg msg `uc  1 a 1 1 ]
+"155
+} 0
+"116
+[v _set_write set_write `(v  1 e 0 0 ]
+{
+"122
+} 0
+"220
+[v _vread vread `(i  1 e 2 0 ]
+{
+"223
+[v vread@rval rval `i  1 a 2 5 ]
+"227
+} 0
+"209
+[v _read_adc read_adc `(v  1 e 0 0 ]
+{
+"218
+} 0
+"157
+[v _read_msg read_msg `(uc  1 e 1 0 ]
+{
+"172
+[v read_msg@msg msg `uc  1 a 1 5 ]
+"180
+} 0
+"77
+[v _wait_while_strobe_low wait_while_strobe_low `(v  1 e 0 0 ]
+{
+"88
+} 0
+"63
+[v _wait_while_strobe_high wait_while_strobe_high `(v  1 e 0 0 ]
+{
+"74
+} 0
+"107
+[v _set_read set_read `(v  1 e 0 0 ]
+{
+"114
+} 0
+"182
+[v _debug_write debug_write `(v  1 e 0 0 ]
+{
+[v debug_write@msg msg `uc  1 a 1 wreg ]
+"183
+[v debug_write@i i `i  1 a 2 2 ]
+"182
+[v debug_write@msg msg `uc  1 a 1 wreg ]
+[v debug_write@msg msg `uc  1 a 1 1 ]
+"203
+} 0
+"90
+[v _init init `(v  1 e 0 0 ]
+{
+"105
+} 0
