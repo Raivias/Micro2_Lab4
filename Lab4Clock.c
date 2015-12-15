@@ -50,49 +50,35 @@ int setClock(int deviceHandle){
 	
 	buffer[0] = 0x00;
 	
-	time_t result = time(NULL);
-	
 	int sysSeconds, sysMinutes, sysHours, sysYears, sysDays, sysMonths;
 
-	if(result != -1)
-	{
-		struct tm *timeInfo;
+	//Get time from user
+	int userHours, userMinutes, userSeconds;
+	printf("Hours?\n");
+	scanf("%d", &userHours);
+	printf("Min?\n");
+	scanf("%d", &userMinutes);
+	printf("Sec?\n");
+	scanf("%d", &userSeconds);
 
-		timeInfo = gmtime(&result);
+	sysSeconds = userSeconds;
+	sysMinutes = userMinutes;
+	sysHours = userHours;
+
+	printf("Sys time is: %d %d %d\n", sysHours, sysMinutes, sysSeconds);
 		
-		//Get time from user
-		int userHours, userMinutes, userSeconds;
-		printf("Hours?\n");
-		scanf("%d", &userHours);
-		printf("Min?\n");
-		scanf("%d", &userMinutes);
-		printf("Sec?\n");
-		scanf("%d", &userSeconds);
-		
-		sysSeconds = timeInfo->tm_sec;
-		sysMinutes = timeInfo->tm_min;
-		sysHours = (timeInfo->tm_hour)%24;//HOUR
-		printf("Sys time is: %d %d %d\n", sysHours, sysMinutes, sysSeconds);
-		
-		
-		sysDays = timeInfo->tm_mday;
-		sysMonths = (timeInfo->tm_mon+1);
-		sysYears = (timeInfo->tm_year+1900) %100 ;
-		
-		int userYears, userDay, userMonth;		
-		printf("Year?\n");
-		scanf("%d", &userYears);
-		printf("Month?\n");
-		scanf("%d", &userMonth);
-		printf("Day?\n");
-		scanf("%d", &userDay);
-		sysYears = userYears %100 ;
-		sysDays = userDay;
-		sysMonths = userMonth;
-		printf("Set Date is: %d/%d/%d\n", sysMonths, sysDays, sysYears);
-		
-	}
-	
+	int userYears, userDay, userMonth;		
+	printf("Year?\n");
+	scanf("%d", &userYears);
+	printf("Month?\n");
+	scanf("%d", &userMonth);
+	printf("Day?\n");
+	scanf("%d", &userDay);
+	sysYears = userYears %100 ;
+	sysDays = userDay;
+	sysMonths = userMonth;
+	printf("Set Date is: %d/%d/%d\n", sysMonths, sysDays, sysYears);
+
 	int lowSec = sysSeconds % 10;
 	lowSec &= 0x0f;
 	int highSec = (sysSeconds/10) << 4;
@@ -195,12 +181,11 @@ int* getClock(int deviceHandle, int *rval){
 	lowYear = 0x0f & buffer[6];
 	highYear = (0xf0 & buffer[6])>>4;
 
-	 /* DEBUG STUFF!
-	 printf(ANSI_COLOR_RED);
-     printf("Date: %d%d - %d%d - %d%d\n", highYear,lowYear,highMonth,lowMonth, highDay, lowDay);
-     printf("Time: %d%d : %d%d : %d%d\n", highHour,lowHour, highMin,lowMin, highSec, lowSec);
-     printf(ANSI_COLOR_RESET);
-     */
+	 //// DEBUG STUFF!
+	 //printf(ANSI_COLOR_RED);
+  //   printf("Date: %d%d - %d%d - %d%d\n", highYear,lowYear,highMonth,lowMonth, highDay, lowDay);
+  //   printf("Time: %d%d : %d%d : %d%d\n", highHour,lowHour, highMin,lowMin, highSec, lowSec);
+  //   printf(ANSI_COLOR_RESET);
 	 
 	rval[0] = lowSec + highSec*10;
 	rval[1] = lowMin + highMin*10;
@@ -235,6 +220,7 @@ int initiateGPIO (int gpio){
 }
 
 int initI2C() {
+	printf("How the fuck is this getting called\n");
 	
 	int fileDirectory, ret;
 	

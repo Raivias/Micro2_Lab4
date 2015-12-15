@@ -17,6 +17,7 @@
 
 //locals! Not that they're used! What the fuck!
 //#include "SensorComs.h"
+#include "colors.h"
 
 
 const int CMD_WAITING = 0; //Waiting for command
@@ -62,7 +63,18 @@ void * SensorComThread(void * param){
 			input->sensorDataPt->resp = cmdRun(tolower(input->sensorDataPt->cmd));
 			
 			//update timestamp
-			getClock(*(input->clockHandlePt), &(input->sensorDataPt->timeStamp));
+			int buff[6];
+			getClock(*(input->clockHandlePt), buff);
+
+			input->sensorDataPt->timeStamp[0] = buff[0];
+			input->sensorDataPt->timeStamp[1] = buff[1];
+			input->sensorDataPt->timeStamp[2] = buff[2];
+			input->sensorDataPt->timeStamp[3] = buff[3];
+			input->sensorDataPt->timeStamp[4] = buff[4];
+			input->sensorDataPt->timeStamp[5] = buff[5];
+
+			//Debug print!
+			//printf(ANSI_COLOR_RED "%d:%d:%d %d/%d/%d\n" ANSI_COLOR_RESET, input->sensorDataPt->timeStamp[2], input->sensorDataPt->timeStamp[1], input->sensorDataPt->timeStamp[0], input->sensorDataPt->timeStamp[3], input->sensorDataPt->timeStamp[4], input->sensorDataPt->timeStamp[5]);
 			
 			//update as cmd ran
 			input->sensorDataPt->run = CMD_RAN; //Set run to have ran
@@ -157,7 +169,7 @@ void * UserThread(void * param){
 		printf("Results are back:\n");
 		// response hr:min:sec day/month/year
 		printf("%d %d:%d:%d %d/%d/%d\n", sensorDataCopy.resp,
-		sensorDataCopy.timeStamp[0], sensorDataCopy.timeStamp[1], sensorDataCopy.timeStamp[2],
+		sensorDataCopy.timeStamp[2], sensorDataCopy.timeStamp[1], sensorDataCopy.timeStamp[0],
 		sensorDataCopy.timeStamp[3], sensorDataCopy.timeStamp[4], sensorDataCopy.timeStamp[5]);
 		
 	}
@@ -217,9 +229,6 @@ int main(){
 	
 	//TODO change clientFunction to actual function
 	//pthread_create( &clientThreadAdd, NULL, clientFunction, (void*) NULL);
-	
-	
-	
 	
 	//wait for child producer to finish
 	pthread_join(userThreadAdd, NULL);
