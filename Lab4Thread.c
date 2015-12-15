@@ -138,7 +138,7 @@ void * UserThread(void * param){
 				hasItRun = 1;
 				sensorDataCopy = *(input->sensorDataPt);
 				//let the world know it ran
-				sensorDataPt->run = CMD_WAITING;
+				input->sensorDataPt->run = CMD_WAITING;
 			}
 			
 			pthread_mutex_unlock(input->sensorComsMutexPt);
