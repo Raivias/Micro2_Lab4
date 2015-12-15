@@ -29,7 +29,7 @@ typedef struct SensorInfo {
 
 typedef struct ThreadInput{
 	pthread_mutex_t *sensorComsMutexPt;
-	SensorInfo *sensorDataPt;
+	struct SensorInfo *sensorDataPt;
 	int *clockHandle;
 	int *killSwitch;
 	pthread_mutex_t *killSwitchMutexPt;
@@ -40,7 +40,7 @@ void * SensorComThread(void * param){
 	/* This function acts as a main thread for interacting with the sensor clock is set in 
 		UserFaceThread
 	*/
-	ThreadInput *input = param;
+	struct ThreadInput *input = param;
 	
 	int localKill = 0;
 	while(localKill == 0){
@@ -75,7 +75,7 @@ void * SensorComThread(void * param){
 void * UserThread(void * param){
 	/* when this program begins it's assumed sensorComsMutexPt is locked */
 	
-	ThreadInput *input = param;
+	struct ThreadInput *input = param;
 	
 	//Lock sensorComMutex until clock is set
 	pthread_mutex_lock(input->sensorComsMutexPt);
@@ -127,7 +127,7 @@ void * UserThread(void * param){
 		
 		//loop until command is run
 		int hasItRun = 0;
-		SensorInfo sensorDataCopy;
+		struct SensorInfo sensorDataCopy;
 		while (hasItRun == 0)
 		{
 			//lock mutex to check if it's run
@@ -159,7 +159,7 @@ int main(){
 	//initialize I2C
 	initI2C();
 	
-	SensorInfo sensorData;
+	struct SensorInfo sensorData;
 		sensorData.run = CMD_WAITING;
 		sensorData.resp = 0x0F;
 		sensorData.cmd = 0;
@@ -176,7 +176,7 @@ int main(){
 	pthread_mutex_t killSwitchMutex;
 	
 		//create parameters for threads
-		ThreadInput threadInput;
+		struct ThreadInput threadInput;
 			threadInput.sensorComsMutexPt = &sensorComMutex;
 			threadInput.sensorDataPt = &sensorData;
 			threadInput.clockHandle = clockHandle;
