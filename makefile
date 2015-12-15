@@ -12,6 +12,9 @@ Lab4Photo.o: Lab4Photo.c
 Lab4Clock.o: Lab4Clock.c
 	gcc -c Lab4Clock.c
 
+run: all
+	./prog4
+	
 clean:
 	rm *.o 
 	rm prog4

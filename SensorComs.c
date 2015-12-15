@@ -16,6 +16,7 @@ struct SensorInfo {
 
 
 void SensorComThread(pthread_mutex_t *sensorComsMutexPt, SensorInfo *sensorDataPt){
+	printf("What the fuck.\n");
 	/* This function acts as a main thread for interacting with the sensor */
 	
 	//initialize I2C
@@ -35,6 +36,7 @@ void SensorComThread(pthread_mutex_t *sensorComsMutexPt, SensorInfo *sensorDataP
 		
 		//check if there is a new command
 		if( sensorDataPt->run == 0){
+			printf("Recieved new command, cap'n\n");
 			//if there is run it
 			sensorDataPt->cmd = tolower(sensorDataPt->cmd);
 			sensorDataPt->resp = cmdRun(sensorDataPt->cmd);

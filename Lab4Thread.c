@@ -1,7 +1,7 @@
 /*
-*	This file contains the thread setup for Lab 4
+*	This file contains the thread setup for Lab 4, and now a test of the emergency file transfer system
 *
-*
+*	Also, appears to be the only file that does anything? Not sure.
 */
 
 #include <pthread.h>
@@ -15,10 +15,14 @@
 #include <unistd.h>
 #include <stdio.h>
 
+//locals! Not that they're used! What the fuck!
+//#include "SensorComs.h"
+
 
 const int CMD_WAITING = 0; //Waiting for command
 const int CMD_RUN = 1; //run the command
 const int CMD_RAN = 2; //ran the command
+const int CMD_DIE = 3;
 
 typedef struct SensorInfo {
 	int run; //used as enum
@@ -35,20 +39,25 @@ typedef struct ThreadInput{
 	int *killSwitchPt;
 };
 
-
+//WIP talk to Xav about this
 void * SensorComThread(void * param){
 	/* This function acts as a main thread for interacting with the sensor clock is set in 
 		UserFaceThread
 	*/
 	struct ThreadInput *input = param;
 	
-	int localKill = 0;
-	while(localKill == 0){
+	while(1){
 		//lock mutex to check if there is a new command to run
 		pthread_mutex_lock(input->sensorComsMutexPt);
 		
 		//check if there is a new command
 		if( input->sensorDataPt->run == CMD_RUN){ //wait for a cmd to exe
+			if (input->sensorDataPt->cmd == CMD_DIE) {
+				printf("Ending sensor communications thread...\n");
+				return;
+			}
+			
+			printf("Recieved a new command, cap'n\n");
 			//if there is run it
 			input->sensorDataPt->resp = cmdRun(tolower(input->sensorDataPt->cmd));
 			
@@ -60,25 +69,19 @@ void * SensorComThread(void * param){
 		}
 		//unlock mutex
 		pthread_mutex_unlock(input->sensorComsMutexPt);	
-		
-		//Check if thread can kill itself
-		pthread_mutex_lock(input->killSwitchMutexPt);
-		localKill = *(input->killSwitchPt);
-		pthread_mutex_unlock(input->killSwitchMutexPt);
 	}
-	pthread_exit(0);
-	return;
 }
 
 
 void * UserThread(void * param){
-	/* when this program begins it's assumed sensorComsMutexPt is locked */
+	/* when this program begins it's assumed sensorComsMutexPt is locked */ //->WIP not sure this is true, ask Xav
 	
-	struct ThreadInput *input = param;
+	struct ThreadInput *input = param;	//type safety is for languages that aren't C.
 	
 	//Lock sensorComMutex until clock is set
 	pthread_mutex_lock(input->sensorComsMutexPt);
 	
+	//WIP this is UI handling across threads - probably revisit if time
 	printf("User Interface Open\n");
 	printf("Please set clock: \n");
 	setClock(*(input->clockHandlePt));
@@ -96,23 +99,29 @@ void * UserThread(void * param){
 		
 		//quit if command is q
 		if(command == 'q'){
+			pthread_mutex_lock(input->sensorComsMutexPt);
+			input->sensorDataPt->run = CMD_RUN;
+			input->sensorDataPt->cmd = CMD_DIE;
+			pthread_mutex_unlock(input->sensorComsMutexPt);
+
 			pthread_mutex_lock(input->killSwitchMutexPt);
 			*(input->killSwitchPt) = 1;
 			pthread_mutex_unlock(input->killSwitchMutexPt);
-			
+
 			pthread_exit(0);
-			return;
+			return;	//Eh?
 		}
 		
 		
 		//give sensor coms the command
-		int didItGoIn = 0;
+		int didItGoIn = 0;	//I think this made sense to xav when he wrote it
 		while (didItGoIn == 0){
 			//check if the coms are open
 			pthread_mutex_lock(input->sensorComsMutexPt);
 			
 			//if sensor coms is waiting for cmd set new cmd
 			if(input->sensorDataPt->run == CMD_WAITING){
+				printf("Submitting new command\n");
 				input->sensorDataPt->cmd = command;
 				input->sensorDataPt->run = CMD_RUN;
 				didItGoIn = 1;
@@ -134,6 +143,7 @@ void * UserThread(void * param){
 
 			//if run is waiting for cmd set new cmd
 			if(input->sensorDataPt->run == CMD_RAN){
+				printf("reading results of last command\n");
 				sensorDataCopy = *(input->sensorDataPt);
 				input->sensorDataPt->run = CMD_WAITING;
 				hasItRun = 1;
