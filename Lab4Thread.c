@@ -50,7 +50,7 @@ void * SensorComThread(void * param){
 		//check if there is a new command
 		if( input->sensorDataPt->run == CMD_RUN){ //wait for a cmd to exe
 			//if there is run it
-			input->sensorDataPt->resp = cmdRun(toLower(input->sensorDataPt->cmd));
+			input->sensorDataPt->resp = cmdRun(tolower(input->sensorDataPt->cmd));
 			
 			//update timestamp
 			getClock(*(input->clockHandlePt), &(input->sensorDataPt->timeStamp));
