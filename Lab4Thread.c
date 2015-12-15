@@ -82,7 +82,7 @@ void * UserThread(void * param){
 	
 	printf("User Interface Open\n");
 	printf("Please set clock: \n");
-	setClock(*(input->clockHandle));
+	setClock(*(input->clockHandlePt));
 	
 	//unlock mutex so Sensor Coms can run
 	pthread_mutex_unlock(input->sensorComsMutexPt);
@@ -134,11 +134,11 @@ void * UserThread(void * param){
 			pthread_mutex_lock(input->sensorComsMutexPt);
 
 			//if run is waiting for cmd set new cmd
-			if(sensorDataPt->run == CMD_RAN){
+			if(input->sensorDataPt->run == CMD_RAN){
 				hasItRun = 1;
 				sensorDataCopy = *(input->sensorDataPt);
 				//let the world know it ran
-				sensorDataPt->run = CMD_WAITING
+				sensorDataPt->run = CMD_WAITING;
 			}
 			
 			pthread_mutex_unlock(input->sensorComsMutexPt);
@@ -159,6 +159,8 @@ int main(){
 	//initialize I2C
 	initI2C();
 	
+	int killSwitch; //tells threads to end
+	
 	struct SensorInfo sensorData;
 		sensorData.run = CMD_WAITING;
 		sensorData.resp = 0x0F;
@@ -171,6 +173,8 @@ int main(){
 	pthread_t sensorThreadAdd, clientThreadAdd, userThreadAdd; //Threads
 	int eRetSen, eRetCli, eRetUser; //thread checkers
 	
+	
+	
 	//Mutexs
 	pthread_mutex_t sensorComMutex;
 	pthread_mutex_t killSwitchMutex;
@@ -179,8 +183,8 @@ int main(){
 		struct ThreadInput threadInput;
 			threadInput.sensorComsMutexPt = &sensorComMutex;
 			threadInput.sensorDataPt = &sensorData;
-			threadInput.clockHandlePt = clockHandle;
-			threadInput.killSwitchPt = 0;
+			threadInput.clockHandlePt = &clockHandle;
+			threadInput.killSwitchPt = &killSwitch;
 			threadInput.killSwitchMutexPt = &killSwitchMutex;
 	
 	
