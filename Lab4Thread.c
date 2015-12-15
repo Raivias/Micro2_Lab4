@@ -217,7 +217,10 @@ void * doWebStuff(void* params) {
 			sleep(1);
 			continue;
 		}
-
+		
+		char temp_time[] = "XXXXXXXX-XX:XX:XX";
+		const char * timestamp;
+		
 		char buf[1024] = {1};
 		const char* hostname = "localhost";
 		const int   port = 8080;
@@ -227,8 +230,8 @@ void * doWebStuff(void* params) {
 		const int   adcval = mostRecentSense.resp;
 		const char* status = "Tired";
 		printf("%d%d%d-%d:%d:%d\n", mostRecentSense.timeStamp[5], mostRecentSense.timeStamp[4], mostRecentSense.timeStamp[3], mostRecentSense.timeStamp[2], mostRecentSense.timeStamp[1], mostRecentSense.timeStamp[0]);
-		snprintf(buf, 1024, "20%02x%02x%02x-%02x:%02x:%02x", mostRecentSense.timeStamp[5], mostRecentSense.timeStamp[4], mostRecentSense.timeStamp[3], mostRecentSense.timeStamp[2], mostRecentSense.timeStamp[1], mostRecentSense.timeStamp[0]);
-		const char* timestamp = buf;
+		sprintf(temp_time, "20%02x%02x%02x-%02x:%02x:%02x", mostRecentSense.timeStamp[5], mostRecentSense.timeStamp[4], mostRecentSense.timeStamp[3], mostRecentSense.timeStamp[2], mostRecentSense.timeStamp[1], mostRecentSense.timeStamp[0]);
+		timestamp = temp_time;
 
 		pthread_mutex_unlock(&record_lock);
 	
