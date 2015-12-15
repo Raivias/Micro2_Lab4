@@ -38,6 +38,6 @@ int initPhotores();
 int getPhotores();
 int pingPhotores();
 int resetPhotores();
-
+int cmdRun(char cmd);
 
 #endif

@@ -271,3 +271,23 @@ int resetPhotores(){
 	write_msg(MSG_RESET);
 	return (int) read_msg();
 }
+
+int cmdRun(char cmd){
+	int returnMsg;
+	cmd = tolower(cmd);
+	switch(cmd){
+		case 'r':
+			returnMsg = resetPhotores();
+			break;
+		case 'p':
+			returnMsg = pingPhotores();
+			break;
+		case 'g':
+			returnMsg = getPhotores();
+			break;
+		default:
+			returnMsg = -1;
+			break;
+	}
+	return returnMsg;
+}
