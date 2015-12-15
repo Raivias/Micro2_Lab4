@@ -218,7 +218,7 @@ void * doWebStuff(void* params) {
 			continue;
 		}
 
-		char buf[1024];
+		char buf[1024] = {1};
 		const char* hostname = "localhost";
 		const int   port = 8080;
 		const int   id = 12;
