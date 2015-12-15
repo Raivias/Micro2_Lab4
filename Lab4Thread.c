@@ -226,11 +226,12 @@ void * doWebStuff(void* params) {
 		const char* name = "Team_Steve";
 		const int   adcval = mostRecentSense.resp;
 		const char* status = "Tired";
+		printf("%d%d%d-%d:%d:%d\n", mostRecentSense.timeStamp[5], mostRecentSense.timeStamp[4], mostRecentSense.timeStamp[3], mostRecentSense.timeStamp[2], mostRecentSense.timeStamp[1], mostRecentSense.timeStamp[0]);
 		snprintf(buf, 1024, "%d%d%d-%d:%d:%d\n", mostRecentSense.timeStamp[5], mostRecentSense.timeStamp[4], mostRecentSense.timeStamp[3], mostRecentSense.timeStamp[2], mostRecentSense.timeStamp[1], mostRecentSense.timeStamp[0]);
 		const char* timestamp = buf;
 
 		pthread_mutex_unlock(&record_lock);
-
+	
 		snprintf(buf, 1024, "http://%s:%d/update?id=%d&password=%s&name=%s&data=%d&status=%s&timestamp=%s", hostname, port, id, password, name, adcval, status, timestamp);
 		HTTP_GET(buf);
 		printf("%s", buf);
