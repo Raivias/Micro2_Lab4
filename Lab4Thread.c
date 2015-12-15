@@ -31,8 +31,8 @@ typedef struct ThreadInput{
 	pthread_mutex_t *sensorComsMutexPt;
 	struct SensorInfo *sensorDataPt;
 	int *clockHandlePt;
-	int *killSwitchPt;
 	pthread_mutex_t *killSwitchMutexPt;
+	int *killSwitchPt;
 };
 
 
@@ -50,13 +50,12 @@ void * SensorComThread(void * param){
 		//check if there is a new command
 		if( input->sensorDataPt->run == CMD_RUN){ //wait for a cmd to exe
 			//if there is run it
-			input->sensorDataPt->cmd = tolower(input->sensorDataPt->cmd);
-			input->sensorDataPt->resp = cmdRun(input->sensorDataPt->cmd);
+			input->sensorDataPt->resp = cmdRun(toLower(input->sensorDataPt->cmd));
 			
 			//update timestamp
 			getClock(*(input->clockHandlePt), &(input->sensorDataPt->timeStamp));
 			
-			//update as cmd run
+			//update as cmd ran
 			input->sensorDataPt->run = CMD_RAN; //Set run to have ran
 		}
 		//unlock mutex
@@ -135,10 +134,9 @@ void * UserThread(void * param){
 
 			//if run is waiting for cmd set new cmd
 			if(input->sensorDataPt->run == CMD_RAN){
-				hasItRun = 1;
 				sensorDataCopy = *(input->sensorDataPt);
-				//let the world know it ran
 				input->sensorDataPt->run = CMD_WAITING;
+				hasItRun = 1;
 			}
 			
 			pthread_mutex_unlock(input->sensorComsMutexPt);
