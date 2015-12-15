@@ -14,6 +14,8 @@
 //#include <sys/wait.h>
 #include <unistd.h>
 #include <stdio.h>
+#include <stdio.h>
+#include <curl/curl.h>
 
 //locals! Not that they're used! What the fuck!
 //#include "SensorComs.h"
@@ -39,6 +41,10 @@ typedef struct ThreadInput{
 	pthread_mutex_t *killSwitchMutexPt;
 	int *killSwitchPt;
 };
+
+//Globals is easies
+struct SensorInfo mostRecentSense;
+pthread_mutex_t record_lock;
 
 //WIP talk to Xav about this
 void * SensorComThread(void * param){
@@ -157,6 +163,20 @@ void * UserThread(void * param){
 			if(input->sensorDataPt->run == CMD_RAN){
 				printf("reading results of last command\n");
 				sensorDataCopy = *(input->sensorDataPt);
+
+				pthread_mutex_lock(&record_lock);
+
+				mostRecentSense.resp = sensorDataCopy.resp;
+				mostRecentSense.timeStamp[0] = sensorDataCopy.timeStamp[0];
+				mostRecentSense.timeStamp[1] = sensorDataCopy.timeStamp[1];
+				mostRecentSense.timeStamp[2] = sensorDataCopy.timeStamp[2];
+				mostRecentSense.timeStamp[3] = sensorDataCopy.timeStamp[3];
+				mostRecentSense.timeStamp[4] = sensorDataCopy.timeStamp[4];
+				mostRecentSense.timeStamp[5] = sensorDataCopy.timeStamp[5];
+
+				pthread_mutex_unlock(&record_lock);
+
+
 				input->sensorDataPt->run = CMD_WAITING;
 				hasItRun = 1;
 			}
@@ -175,10 +195,58 @@ void * UserThread(void * param){
 	}
 }
 
+//laziness inlining - the linking here is already really weird and my brain isn't working all that well right now.
+void HTTP_GET(const char* url) {
+	CURL *curl;
+	curl = curl_easy_init();
+	if (curl) {
+		curl_easy_setopt(curl, CURLOPT_URL, url);
+		curl_easy_perform(curl);
+		curl_easy_cleanup(curl);
+	}
+}
+
+//more laziness inlining
+void * doWebStuff(void* params) {
+	while (1) {
+
+
+		pthread_mutex_lock(&record_lock);
+		if (mostRecentSense.resp == -1) {
+			pthread_mutex_unlock(&record_lock);
+			sleep(1);
+			continue;
+		}
+
+		char buf[1024];
+		const char* hostname = "localhost";
+		const int   port = 8000;
+		const int   id = 1;
+		const char* password = "password";
+		const char* name = "Team_Steve";
+		const int   adcval = mostRecentSense.resp;
+		const char* status = "Tired";
+		snprintf(buf, 1024, "%d%d%d-%d:%d:%d\n", mostRecentSense.timeStamp[5], mostRecentSense.timeStamp[4], mostRecentSense.timeStamp[3], mostRecentSense.timeStamp[2], mostRecentSense.timeStamp[1], mostRecentSense.timeStamp[0]);
+		const char* timestamp = buf;
+
+		pthread_mutex_unlock(&record_lock);
+
+		snprintf(buf, 1024, "http://%s:%d/update?id=%d&password=%s&name=%s&data=%d&status=%s&timestamp=%s", hostname, port, id, password, name, adcval, status, timestamp);
+		HTTP_GET(buf);
+		printf("%s", buf);
+		sleep(1);
+	}
+	return NULL;
+}
+
+
 int main(){
 	//initialize I2C
 	initI2C();
 	
+	pthread_mutex_init(&record_lock, NULL);
+	mostRecentSense.resp = -1;
+
 	int killSwitch; //tells threads to end
 	
 	struct SensorInfo sensorData;
@@ -226,6 +294,10 @@ int main(){
 	
 	//TODO change SensorComThread inputs!!!
 	pthread_create( &sensorThreadAdd, NULL, &SensorComThread, &threadInput);
+
+	//I'm really tired
+	pthread_t webthread;
+	pthread_create(&webthread, NULL, &doWebStuff, NULL);
 	
 	//TODO change clientFunction to actual function
 	//pthread_create( &clientThreadAdd, NULL, clientFunction, (void*) NULL);

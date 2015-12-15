@@ -1,7 +1,7 @@
 all: prog4
 
 prog4: Lab4Thread.o Lab4Photo.o Lab4Clock.o
-	gcc Lab4Thread.o Lab4Photo.o Lab4Clock.o -o prog4 -lpthread
+	gcc Lab4Thread.o Lab4Photo.o Lab4Clock.o -o prog4 -lpthread -lcurl
 
 Lab4Main.o: Lab4Thread.c
 	gcc -c Lab4Thread.c
