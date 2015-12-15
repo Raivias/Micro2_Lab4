@@ -207,7 +207,7 @@ int* getClock(int deviceHandle, int *rval){
 	rval[2] = lowHour + highHour*10;
 	rval[3] = lowDay + highDay*10;
 	rval[4] = lowMonth + highMonth*10;
-	rval[5] = lowYear;
+	rval[5] = lowYear + highYear*10;
 	return rval;
 }
 
