@@ -24,14 +24,14 @@ typedef struct SensorInfo {
 	int run; //used as enum
 	char cmd;
 	int resp;
-	char timeStamp[7];
+	char timeStamp[10];
 };
 
 typedef struct ThreadInput{
 	pthread_mutex_t *sensorComsMutexPt;
 	struct SensorInfo *sensorDataPt;
-	int *clockHandle;
-	int *killSwitch;
+	int *clockHandlePt;
+	int *killSwitchPt;
 	pthread_mutex_t *killSwitchMutexPt;
 };
 
@@ -54,17 +54,17 @@ void * SensorComThread(void * param){
 			input->sensorDataPt->resp = cmdRun(input->sensorDataPt->cmd);
 			
 			//update timestamp
-			getClock(input->clockHandle, &(input->sensorDataPt.timeStamp));
+			getClock(*(input->clockHandlePt), &(input->sensorDataPt.timeStamp));
 			
 			//update as cmd run
-			input->sensorDataPt.run = CMD_RAN; //Set run to have ran
+			input->sensorDataPt->run = CMD_RAN; //Set run to have ran
 		}
 		//unlock mutex
 		pthread_mutex_unlock(input->sensorComsMutexPt);	
 		
 		//Check if thread can kill itself
 		pthread_mutex_lock(input->killSwitchMutexPt);
-		localKill = input->killSwitch;
+		localKill = *(input->killSwitchPt);
 		pthread_mutex_unlock(input->killSwitchMutexPt);
 	}
 	pthread_exit(0);
@@ -98,8 +98,8 @@ void * UserThread(void * param){
 		//quit if command is q
 		if(command == 'q'){
 			pthread_mutex_lock(input->killSwitchMutexPt);
-			input->killSwitch = 1;
-			pthread_mutex_unlock(input->killSwitch);
+			input->killSwitchPt = 1;
+			pthread_mutex_unlock(input->killSwitchPt);
 			
 			pthread_exit(0);
 			return;
@@ -179,8 +179,8 @@ int main(){
 		struct ThreadInput threadInput;
 			threadInput.sensorComsMutexPt = &sensorComMutex;
 			threadInput.sensorDataPt = &sensorData;
-			threadInput.clockHandle = clockHandle;
-			threadInput.killSwitch = 0;
+			threadInput.clockHandlePt = clockHandle;
+			threadInput.killSwitchPt = 0;
 			threadInput.killSwitchMutexPt = &killSwitchMutex;
 	
 	
