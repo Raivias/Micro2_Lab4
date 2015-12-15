@@ -227,7 +227,7 @@ void * doWebStuff(void* params) {
 		const int   adcval = mostRecentSense.resp;
 		const char* status = "Tired";
 		printf("%d%d%d-%d:%d:%d\n", mostRecentSense.timeStamp[5], mostRecentSense.timeStamp[4], mostRecentSense.timeStamp[3], mostRecentSense.timeStamp[2], mostRecentSense.timeStamp[1], mostRecentSense.timeStamp[0]);
-		snprintf(buf, 1024, "%d%d%d-%d:%d:%d\n", mostRecentSense.timeStamp[5], mostRecentSense.timeStamp[4], mostRecentSense.timeStamp[3], mostRecentSense.timeStamp[2], mostRecentSense.timeStamp[1], mostRecentSense.timeStamp[0]);
+		snprintf(buf, 1024, "20%02x%02x%02x-%02x:%02x:%02x", mostRecentSense.timeStamp[5], mostRecentSense.timeStamp[4], mostRecentSense.timeStamp[3], mostRecentSense.timeStamp[2], mostRecentSense.timeStamp[1], mostRecentSense.timeStamp[0]);
 		const char* timestamp = buf;
 
 		pthread_mutex_unlock(&record_lock);
