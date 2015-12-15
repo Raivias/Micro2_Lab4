@@ -220,8 +220,8 @@ void * doWebStuff(void* params) {
 
 		char buf[1024];
 		const char* hostname = "localhost";
-		const int   port = 8000;
-		const int   id = 1;
+		const int   port = 8080;
+		const int   id = 12;
 		const char* password = "password";
 		const char* name = "Team_Steve";
 		const int   adcval = mostRecentSense.resp;

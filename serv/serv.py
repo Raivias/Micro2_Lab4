@@ -1,6 +1,6 @@
 ﻿#!/usr/bin/python
 
-port=8000
+port=8080
 root=("html", "html_production")[0]
 verbose=False
 
