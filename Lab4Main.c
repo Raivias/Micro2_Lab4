@@ -4,11 +4,25 @@
 /* Authors: Group Steve													*/
 /************************************************************************/
 
+#include <stdio.h>
+#include <fcntl.h>
+#include <linux/i2c-dev.h>
+#include <linux/i2c.h>
+#include <stdlib.h>
+#include <string.h>
+#include <time.h>
+#include <stdint.h>
+
+#include "colors.h"
+
 #include "Lab4Clock.h"
+#include "Lab4Photo.h"
 
 const int WAITTIME = 00;
 
 void main(){	
+	
+	initI2C();
 	//Set clock
 	int clockHandle = openClockInterface();
 	setClock(clockHandle);
@@ -26,8 +40,10 @@ void main(){
 		
 		//get time
 		int timeData[10];
-		getClock(clockHandle);
+		getClock(clockHandle, timeData);
 		//display
-		printf("%d %d %d %d:%d:%d\n", timeData[6], timeData[5], timeData[7], timeData[2], timeData[1], timeData[0]);	//hour, min, sec0
+		printf("%d:%d:%d on %d/%d/%d\n", 
+		 timeData[2], timeData[1], timeData[0],
+		 timeData[4], timeData[3], timeData[5]);
 	}
 }

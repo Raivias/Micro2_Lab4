@@ -1,4 +1,19 @@
+#include <stdio.h>
+#include <fcntl.h>
+#include <linux/i2c-dev.h>
+#include <linux/i2c.h>
+#include <stdlib.h>
+#include <string.h>
+#include <time.h>
+#include <stdint.h>
+#include <errno.h>
+
+#include "colors.h"
+#include "Lab4Photo.h"
+
 #include "Lab4Clock.h"
+
+const int CLOCKI2CADD = 0x68;
 
 int openClockInterface(){
 	//Set I2C lines
@@ -54,23 +69,15 @@ int setClock(int deviceHandle){
 		printf("Sec?\n");
 		scanf("%d", &userSeconds);
 		
-	
-		printf("%d %d %d\n", userHours, userMinutes, userSeconds);
-		
 		sysSeconds = timeInfo->tm_sec;
 		sysMinutes = timeInfo->tm_min;
 		sysHours = (timeInfo->tm_hour)%24;//HOUR
 		printf("Sys time is: %d %d %d\n", sysHours, sysMinutes, sysSeconds);
 		
-		sysSeconds = userSeconds;
-		sysMinutes = userMinutes;
-		sysHours = userHours %24;
-		printf("Set time is: %d %d %d\n", sysHours, sysMinutes, sysSeconds);
 		
-		sysYears = (timeInfo->tm_year+1900) %100 ;
-
 		sysDays = timeInfo->tm_mday;
 		sysMonths = (timeInfo->tm_mon+1);
+		sysYears = (timeInfo->tm_year+1900) %100 ;
 		
 		int userYears, userDay, userMonth;		
 		printf("Year?\n");
@@ -82,7 +89,7 @@ int setClock(int deviceHandle){
 		sysYears = userYears %100 ;
 		sysDays = userDay;
 		sysMonths = userMonth;
-		printf("Set Date is: %d %d %d\n", sysYears, sysMonths, sysDays);
+		printf("Set Date is: %d/%d/%d\n", sysMonths, sysDays, sysYears);
 		
 	}
 	
@@ -130,20 +137,21 @@ int setClock(int deviceHandle){
 	
 
 	status = write(deviceHandle, buffer, 8	);
-
-	if(status != 7){
+	
+	if(status != 8){
 		printf("Error: more error! (no ack bit)\n");
+		printf("%s(%d)\n", strerror(errno), errno);
 		exit(-1);
 	}
+	return 1;
 }
 
 int* getClock(int deviceHandle, int *rval){
+
+	int miltime = 0b10111111;
 	
 	int lowSec, highSec;
 	int lowMin, highMin;
-
-	int miltime = 0b10111111;
-
 	int lowHour, highHour;
 	int lowDay, highDay;
 	int lowMonth, highMonth;
@@ -160,25 +168,23 @@ int* getClock(int deviceHandle, int *rval){
 		printf("Write Failure\n");
 		exit(-1);
 	}else{
-		status = read(deviceHandle, buffer, 7);
-		if(status != 7){
+		status = read(deviceHandle, buffer, 8);
+		if(status != 8){
 			printf("Read Failure\n");
 			exit(-1);
 		}
 	}
 
-	int year, month, day, hours, minutes, seconds;
-
 	highSec = (0x70 & buffer[0])>>4;
 	lowSec = 0x0f & buffer[0];
+	
 	lowMin = 0x0f & buffer[1];
-	
 	highMin = (0x70 & buffer[1])>>4;
+	
 	lowHour = 0x0f & buffer[2];
-	
 	highHour = (0x30 & buffer[2])>>4;
-	lowDay = 0x0f & buffer[4];
 	
+	lowDay = 0x0f & buffer[4];
 	highDay = (0x30 & buffer[4])>>4;
 	
 	
@@ -189,11 +195,13 @@ int* getClock(int deviceHandle, int *rval){
 	lowYear = 0x0f & buffer[6];
 	highYear = (0xf0 & buffer[6])>>4;
 
-	
-	
-	//printf("Date: %d%d - %d%d - %d%d\n", highYear,lowYear,highMonth,lowMonth, highDay,lowDay);
-	//printf("Time: %d%d : %d%d : %d%d\n", highHour,lowHour, highMin,lowMin, highSec, lowSec);
-	
+	 /* DEBUG STUFF!
+	 printf(ANSI_COLOR_RED);
+     printf("Date: %d%d - %d%d - %d%d\n", highYear,lowYear,highMonth,lowMonth, highDay, lowDay);
+     printf("Time: %d%d : %d%d : %d%d\n", highHour,lowHour, highMin,lowMin, highSec, lowSec);
+     printf(ANSI_COLOR_RESET);
+     */
+	 
 	rval[0] = lowSec + highSec*10;
 	rval[1] = lowMin + highMin*10;
 	rval[2] = lowHour + highHour*10;
@@ -203,13 +211,11 @@ int* getClock(int deviceHandle, int *rval){
 	return rval;
 }
 
-int initiateGPIO (int gpio)
-{
+int initiateGPIO (int gpio){
 
 	int fileHandle;
 	char buffer[256];
 	
-
 	fileHandle = open("/sys/class/gpio/export", O_WRONLY);
 	if (ERROR == fileHandle)
 	{
@@ -226,4 +232,26 @@ int initiateGPIO (int gpio)
 	}
 
 	return (0);
+}
+
+int initI2C() {
+	
+	int fileDirectory, ret;
+	
+	char *dev = "/dev/i2c-0";
+	int addr = 0x68;
+	
+	fileDirectory = open(dev, O_RDWR);
+	if(fileDirectory < 0){
+		perror("opening i2c device node\n");
+		return 1;
+	}
+	
+	ret = ioctl(fileDirectory, I2C_SLAVE, addr);
+	
+	if(ret < 0){
+		perror("Selecting I2C device\n");
+	}
+	
+	return fileDirectory;
 }

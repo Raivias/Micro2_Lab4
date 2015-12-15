@@ -1,4 +1,23 @@
-#include <Lab4Photo.h>
+#include "Lab4Photo.h"
+
+#include <assert.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include <fcntl.h>
+#include <unistd.h>
+#include <string.h>
+#include <time.h>
+
+//Send Messages
+const char MSG_RESET = 0x00;
+const char MSG_PING = 0x01;
+const char MSG_GET = 0x02;
+
+//Return Messages
+const char RET_ACK = 0x0E;
+
+//Delay in between send and receive in milliseconds
+const int CLCK_TIME = 10;
 
 //busyloop delay, returns after milis miliseconds
 void delay(int milis){
@@ -215,11 +234,10 @@ int initPhotores(){
 	BUS_STROBE = openGPIO(Strobe, GPIO_DIRECTION_OUT);
 
 	set_write();
-	int i = 0;
-	char busValue;
 
 	//an idle bus is a low strobe
 	writeGPIO(BUS_STROBE, 0);
+	return 1;
 }
 
 int getPhotores(){

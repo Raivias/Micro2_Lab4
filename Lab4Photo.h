@@ -1,13 +1,7 @@
 #ifndef LAB4PHOTO_H
 #define LAB4PHOTO_H
 
-#include <assert.h>
-#include <stdlib.h>
-#include <stdio.h>
-#include <fcntl.h>
-#include <unistd.h>
-#include <string.h>
-#include <time.h>
+
 
 #define Strobe     (26) // IO8
 #define GP_4       (28) // IO4
@@ -19,16 +13,7 @@
 #define GPIO_DIRECTION_OUT     (0)
 #define ERROR                  (-1)
 
-//Send Messages
-const char MSG_RESET = 0x00;
-const char MSG_PING = 0x01;
-const char MSG_GET = 0x02;
 
-//Return Messages
-const char RET_ACK = 0x0E;
-
-//Delay in between send and receive in milliseconds
-const int CLCK_TIME = 10;
 
 //Buses that will be turned high and low
 int BUS_A;
