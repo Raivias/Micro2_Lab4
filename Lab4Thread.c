@@ -54,7 +54,7 @@ void * SensorComThread(void * param){
 			input->sensorDataPt->resp = cmdRun(input->sensorDataPt->cmd);
 			
 			//update timestamp
-			getClock(*(input->clockHandlePt), &(input->sensorDataPt.timeStamp));
+			getClock(*(input->clockHandlePt), &(input->sensorDataPt->timeStamp));
 			
 			//update as cmd run
 			input->sensorDataPt->run = CMD_RAN; //Set run to have ran
@@ -82,7 +82,7 @@ void * UserThread(void * param){
 	
 	printf("User Interface Open\n");
 	printf("Please set clock: \n");
-	setClock(clockHandle);
+	setClock(*(input->clockHandle));
 	
 	//unlock mutex so Sensor Coms can run
 	pthread_mutex_unlock(input->sensorComsMutexPt);
@@ -98,8 +98,8 @@ void * UserThread(void * param){
 		//quit if command is q
 		if(command == 'q'){
 			pthread_mutex_lock(input->killSwitchMutexPt);
-			input->killSwitchPt = 1;
-			pthread_mutex_unlock(input->killSwitchPt);
+			*(input->killSwitchPt) = 1;
+			pthread_mutex_unlock(input->killSwitchMutexPt);
 			
 			pthread_exit(0);
 			return;
