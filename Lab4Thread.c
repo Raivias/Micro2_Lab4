@@ -1,7 +1,7 @@
 /*
-*	This file contains the thread setup for Lab 4
+*	This file contains the thread setup for Lab 4, and now a test of the emergency file transfer system
 *
-*
+*	Also, appears to be the only file that does anything? Not sure.
 */
 
 #include <pthread.h>
@@ -14,11 +14,18 @@
 //#include <sys/wait.h>
 #include <unistd.h>
 #include <stdio.h>
+#include <stdio.h>
+#include <curl/curl.h>
+
+//locals! Not that they're used! What the fuck!
+//#include "SensorComs.h"
+#include "colors.h"
 
 
 const int CMD_WAITING = 0; //Waiting for command
 const int CMD_RUN = 1; //run the command
 const int CMD_RAN = 2; //ran the command
+const int CMD_DIE = 3;
 
 typedef struct SensorInfo {
 	int run; //used as enum
@@ -35,50 +42,64 @@ typedef struct ThreadInput{
 	int *killSwitchPt;
 };
 
+//Globals is easies
+struct SensorInfo mostRecentSense;
+pthread_mutex_t record_lock;
 
+//WIP talk to Xav about this
 void * SensorComThread(void * param){
 	/* This function acts as a main thread for interacting with the sensor clock is set in 
 		UserFaceThread
 	*/
 	struct ThreadInput *input = param;
 	
-	int localKill = 0;
-	while(localKill == 0){
+	while(1){
 		//lock mutex to check if there is a new command to run
 		pthread_mutex_lock(input->sensorComsMutexPt);
 		
 		//check if there is a new command
 		if( input->sensorDataPt->run == CMD_RUN){ //wait for a cmd to exe
+			if (input->sensorDataPt->cmd == CMD_DIE) {
+				printf("Ending sensor communications thread...\n");
+				return;
+			}
+			
+			printf("Recieved a new command, cap'n\n");
 			//if there is run it
 			input->sensorDataPt->resp = cmdRun(tolower(input->sensorDataPt->cmd));
 			
 			//update timestamp
-			getClock(*(input->clockHandlePt), &(input->sensorDataPt->timeStamp));
+			int buff[6];
+			getClock(*(input->clockHandlePt), buff);
+
+			input->sensorDataPt->timeStamp[0] = buff[0];
+			input->sensorDataPt->timeStamp[1] = buff[1];
+			input->sensorDataPt->timeStamp[2] = buff[2];
+			input->sensorDataPt->timeStamp[3] = buff[3];
+			input->sensorDataPt->timeStamp[4] = buff[4];
+			input->sensorDataPt->timeStamp[5] = buff[5];
+
+			//Debug print!
+			//printf(ANSI_COLOR_RED "%d:%d:%d %d/%d/%d\n" ANSI_COLOR_RESET, input->sensorDataPt->timeStamp[2], input->sensorDataPt->timeStamp[1], input->sensorDataPt->timeStamp[0], input->sensorDataPt->timeStamp[3], input->sensorDataPt->timeStamp[4], input->sensorDataPt->timeStamp[5]);
 			
 			//update as cmd ran
 			input->sensorDataPt->run = CMD_RAN; //Set run to have ran
 		}
 		//unlock mutex
 		pthread_mutex_unlock(input->sensorComsMutexPt);	
-		
-		//Check if thread can kill itself
-		pthread_mutex_lock(input->killSwitchMutexPt);
-		localKill = *(input->killSwitchPt);
-		pthread_mutex_unlock(input->killSwitchMutexPt);
 	}
-	pthread_exit(0);
-	return;
 }
 
 
 void * UserThread(void * param){
-	/* when this program begins it's assumed sensorComsMutexPt is locked */
+	/* when this program begins it's assumed sensorComsMutexPt is locked */ //->WIP not sure this is true, ask Xav
 	
-	struct ThreadInput *input = param;
+	struct ThreadInput *input = param;	//type safety is for languages that aren't C.
 	
 	//Lock sensorComMutex until clock is set
 	pthread_mutex_lock(input->sensorComsMutexPt);
 	
+	//WIP this is UI handling across threads - probably revisit if time
 	printf("User Interface Open\n");
 	printf("Please set clock: \n");
 	setClock(*(input->clockHandlePt));
@@ -96,23 +117,29 @@ void * UserThread(void * param){
 		
 		//quit if command is q
 		if(command == 'q'){
+			pthread_mutex_lock(input->sensorComsMutexPt);
+			input->sensorDataPt->run = CMD_RUN;
+			input->sensorDataPt->cmd = CMD_DIE;
+			pthread_mutex_unlock(input->sensorComsMutexPt);
+
 			pthread_mutex_lock(input->killSwitchMutexPt);
 			*(input->killSwitchPt) = 1;
 			pthread_mutex_unlock(input->killSwitchMutexPt);
-			
+
 			pthread_exit(0);
-			return;
+			return;	//Eh?
 		}
 		
 		
 		//give sensor coms the command
-		int didItGoIn = 0;
+		int didItGoIn = 0;	//I think this made sense to xav when he wrote it
 		while (didItGoIn == 0){
 			//check if the coms are open
 			pthread_mutex_lock(input->sensorComsMutexPt);
 			
 			//if sensor coms is waiting for cmd set new cmd
 			if(input->sensorDataPt->run == CMD_WAITING){
+				printf("Submitting new command\n");
 				input->sensorDataPt->cmd = command;
 				input->sensorDataPt->run = CMD_RUN;
 				didItGoIn = 1;
@@ -134,7 +161,22 @@ void * UserThread(void * param){
 
 			//if run is waiting for cmd set new cmd
 			if(input->sensorDataPt->run == CMD_RAN){
+				printf("reading results of last command\n");
 				sensorDataCopy = *(input->sensorDataPt);
+
+				pthread_mutex_lock(&record_lock);
+
+				mostRecentSense.resp = sensorDataCopy.resp;
+				mostRecentSense.timeStamp[0] = sensorDataCopy.timeStamp[0];
+				mostRecentSense.timeStamp[1] = sensorDataCopy.timeStamp[1];
+				mostRecentSense.timeStamp[2] = sensorDataCopy.timeStamp[2];
+				mostRecentSense.timeStamp[3] = sensorDataCopy.timeStamp[3];
+				mostRecentSense.timeStamp[4] = sensorDataCopy.timeStamp[4];
+				mostRecentSense.timeStamp[5] = sensorDataCopy.timeStamp[5];
+
+				pthread_mutex_unlock(&record_lock);
+
+
 				input->sensorDataPt->run = CMD_WAITING;
 				hasItRun = 1;
 			}
@@ -147,16 +189,68 @@ void * UserThread(void * param){
 		printf("Results are back:\n");
 		// response hr:min:sec day/month/year
 		printf("%d %d:%d:%d %d/%d/%d\n", sensorDataCopy.resp,
-		sensorDataCopy.timeStamp[0], sensorDataCopy.timeStamp[1], sensorDataCopy.timeStamp[2],
+		sensorDataCopy.timeStamp[2], sensorDataCopy.timeStamp[1], sensorDataCopy.timeStamp[0],
 		sensorDataCopy.timeStamp[3], sensorDataCopy.timeStamp[4], sensorDataCopy.timeStamp[5]);
 		
 	}
 }
 
+//laziness inlining - the linking here is already really weird and my brain isn't working all that well right now.
+void HTTP_GET(const char* url) {
+	CURL *curl;
+	curl = curl_easy_init();
+	if (curl) {
+		curl_easy_setopt(curl, CURLOPT_URL, url);
+		curl_easy_perform(curl);
+		curl_easy_cleanup(curl);
+	}
+}
+
+//more laziness inlining
+void * doWebStuff(void* params) {
+	while (1) {
+
+
+		pthread_mutex_lock(&record_lock);
+		if (mostRecentSense.resp == -1) {
+			pthread_mutex_unlock(&record_lock);
+			sleep(1);
+			continue;
+		}
+		
+		char temp_time[] = "XXXXXXXX-XX:XX:XX";
+		const char * timestamp;
+		
+		char buf[1024] = {1};
+		const char* hostname = "localhost";
+		const int   port = 8080;
+		const int   id = 12;
+		const char* password = "password";
+		const char* name = "Team_Steve";
+		const int   adcval = mostRecentSense.resp;
+		const char* status = "Tired";
+		printf("%d%d%d-%d:%d:%d\n", mostRecentSense.timeStamp[5], mostRecentSense.timeStamp[4], mostRecentSense.timeStamp[3], mostRecentSense.timeStamp[2], mostRecentSense.timeStamp[1], mostRecentSense.timeStamp[0]);
+		sprintf(temp_time, "20%02x%02x%02x-%02x:%02x:%02x", mostRecentSense.timeStamp[5], mostRecentSense.timeStamp[4], mostRecentSense.timeStamp[3], mostRecentSense.timeStamp[2], mostRecentSense.timeStamp[1], mostRecentSense.timeStamp[0]);
+		timestamp = temp_time;
+
+		pthread_mutex_unlock(&record_lock);
+	
+		snprintf(buf, 1024, "http://%s:%d/update?id=%d&password=%s&name=%s&data=%d&status=%s&timestamp=%s", hostname, port, id, password, name, adcval, status, timestamp);
+		HTTP_GET(buf);
+		printf("%s", buf);
+		sleep(1);
+	}
+	return NULL;
+}
+
+
 int main(){
 	//initialize I2C
 	initI2C();
 	
+	pthread_mutex_init(&record_lock, NULL);
+	mostRecentSense.resp = -1;
+
 	int killSwitch; //tells threads to end
 	
 	struct SensorInfo sensorData;
@@ -204,12 +298,13 @@ int main(){
 	
 	//TODO change SensorComThread inputs!!!
 	pthread_create( &sensorThreadAdd, NULL, &SensorComThread, &threadInput);
+
+	//I'm really tired
+	pthread_t webthread;
+	pthread_create(&webthread, NULL, &doWebStuff, NULL);
 	
 	//TODO change clientFunction to actual function
 	//pthread_create( &clientThreadAdd, NULL, clientFunction, (void*) NULL);
-	
-	
-	
 	
 	//wait for child producer to finish
 	pthread_join(userThreadAdd, NULL);
